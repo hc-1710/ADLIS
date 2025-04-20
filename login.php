@@ -22,6 +22,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($user = $result->fetch_assoc()) {
         if (password_verify($motDePasse, $user['motDePasse'])) {
             $_SESSION['nom'] = $user['nom'];
+             $_SESSION['idClient'] = $user['id']; // Enregistrer l'ID de l'utilisateur
+
+            // Mettre à jour la table 'panier' avec l'ID du client (utilisateur connecté)
+            $idClient = $user['id'];
+            $updatePanierStmt = $mysqli->prepare("UPDATE panier SET idClient = ? WHERE idClient IS NULL");
+            $updatePanierStmt->bind_param("i", $idClient);
+            $updatePanierStmt->execute();
+            $updatePanierStmt->close();
              header("Location: page_principale.php");
              exit();
         } else {

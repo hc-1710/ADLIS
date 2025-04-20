@@ -1,45 +1,50 @@
 <?php
 session_start();
+$conn = mysqli_connect("127.0.0.1", "root", "1206", "base");
 
-// Vérifier si le panier existe, sinon le créer
-if (!isset($_SESSION['panier'])) {
-    $_SESSION['panier'] = [];
+if (!$conn) {
+    die("Connexion échouée : " . mysqli_connect_error());
 }
 
-// Ajouter un livre au panier
-if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['id'])) {
-    $_SESSION['panier'][] = [
-        'id' => $_POST['id'],
-        'titre' => $_POST['titre'],
-        'prix' => $_POST['prix'],
-        'image' => $_POST['image'],
-    ];
+// Ajouter un livre
+if (isset($_GET['id']) && isset($_SESSION['idClient'])) {
+    $id = intval($_GET['id']);
+    $result = mysqli_query($conn, "SELECT * FROM livre WHERE id = $id");
+    $livre = mysqli_fetch_assoc($result);
 
-    // Vérifier si le livre est déjà dans le panier (évite les doublons)
-    $existe = false;
-    foreach ($_SESSION['panier'] as $item) {
-        if ($item['id'] == $livre['id']) {
-            $existe = true;
-            break;
+    if ($livre) {
+        $idClient = $_SESSION['idClient'];
+
+        $stmt = $conn->prepare("INSERT INTO panier (idClient, id_livre, titre, auteur, prix, prix_total, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iissdds", $idClient, $livre['id'], $livre['titre'], $livre['auteur'], $livre['prix'], $livre['prix'], $livre['image']);
+
+        if (!$stmt->execute()) {
+            echo "Erreur lors de l'ajout au panier : " . $stmt->error;
         }
-    }
 
-    if (!$existe) {
-        $_SESSION['panier'][] = $livre;
+        $stmt->close();
     }
 }
 
-// Supprimer un livre du panier
-if (isset($_GET['action']) && $_GET['action'] == "supprimer" && isset($_GET['id'])) {
-    $_SESSION['panier'] = array_filter($_SESSION['panier'], function ($item) {
-        return $item['id'] != $_GET['id'];
-    });
+// Supprimer un livre
+if (isset($_GET['remove']) && isset($_SESSION['idClient'])) {
+    $id_livre = intval($_GET['remove']);
+    $idClient = $_SESSION['idClient'];
+
+    $stmt = $conn->prepare("DELETE FROM panier WHERE idClient = ? AND id_livre = ?");
+    $stmt->bind_param("ii", $idClient, $id_livre);
+    $stmt->execute();
+    $stmt->close();
 }
 
-// Calculer le total
-$prix_total = 0;
-foreach ($_SESSION['panier'] as $item) {
-    $prix_total += $item['prix'];
+// Vider le panier
+if (isset($_GET['clear']) && isset($_SESSION['idClient'])) {
+    $idClient = $_SESSION['idClient'];
+
+    $stmt = $conn->prepare("DELETE FROM panier WHERE idClient = ?");
+    $stmt->bind_param("i", $idClient);
+    $stmt->execute();
+    $stmt->close();
 }
 ?>
 
@@ -47,85 +52,98 @@ foreach ($_SESSION['panier'] as $item) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panier</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Mon Panier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .livre {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .livre-info {
+            max-width: 80%;
+        }
+        .livre-actions a {
+            background-color: #ff6961;
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        .actions a {
+            margin-right: 10px;
+            padding: 10px 15px;
+            background-color: #7494ec;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Mon Panier</h2>
-        <form method="post" action="">
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Produit</th>
-                        <th>Prix</th>
-                        <th>Quantité</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="cart-items">
-                    <?php foreach ($_SESSION['panier'] as $id => $item): ?>
-                        <tr>
-                            <td><img src="<?= htmlspecialchars($item['image']) ?>" alt="Livre"></td>
-                            <td><?= htmlspecialchars($item['titre']) ?></td>
-                            <td class="price"><?= htmlspecialchars($item['prix']) ?> DA</td>
-                            <td><input type="number" name="quantities[<?= $id ?>]" class="quantity" value="<?= $item['quantite'] ?>" min="1"></td>
-                            <td class="item-total"><?= $item['prix'] * $item['quantite'] ?> DA</td>
-                            <td>
-                                <button type="submit" name="remove" value="<?= $id ?>" class="remove-btn">Supprimer</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <div class="cart-summary">
-                <h3>Total : <span id="cart-total"><?= $prix_total ?> DA</span></h3>
-                <button type="submit" name="update" class="checkout-btn">Mettre à jour</button>
-                <button class="checkout-btn">Passer la commande</button>
-            </div>
-        </form>
+
+<h1>🛒 Mon Panier</h1>
+
+<?php
+if (isset($_SESSION['idClient'])) {
+    $idClient = $_SESSION['idClient'];
+
+    $req = $conn->prepare("SELECT * FROM panier WHERE idClient = ?");
+    $req->bind_param("i", $idClient);
+    $req->execute();
+    $result = $req->get_result();
+
+    if ($result->num_rows > 0):
+        $total = 0;
+        while ($livre = $result->fetch_assoc()):
+            $total += $livre['prix'];
+?>
+    <div class="livre">
+        <div class="livre-info">
+            <strong><?= htmlspecialchars($livre['titre']) ?></strong> - <?= htmlspecialchars($livre['prix']) ?> DA
+        </div>
+        <div class="livre-actions">
+            <a href="panier.php?remove=<?= $livre['id_livre'] ?>">Supprimer</a>
+        </div>
     </div>
+<?php endwhile; ?>
+
+    <div class="total">
+        <strong>Total :</strong> <?= $total ?> DA
+    </div>
+
+    <div class="actions">
+        <a href="panier.php?clear=1">🗑️ Vider le panier</a>
+        <a href="page_principale.php">← Continuer vos achats</a>
+    </div>
+
+<?php else: ?>
+    <p>Votre panier est vide.</p>
+    <a href="page_principale.php">← Retour à la boutique</a>
+<?php endif;
+} else {
+    echo "<p>Vous devez vous connecter pour accéder au panier.</p>";
+}
+?>
 </body>
 </html>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .container {
-        max-width: 800px;
-        margin: auto;
-    }
-    .cart-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .cart-table th, .cart-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-    }
-    .cart-table img {
-        width: 80px;
-        height: 100px;
-        object-fit: cover;
-    }
-    .cart-summary {
-        text-align: right;
-        margin-top: 20px;
-    }
-    .checkout-btn, .remove-btn {
-        background-color: #ff5733;
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-    }
-    .checkout-btn:hover, .remove-btn:hover {
-        background-color: #c4421e;
-    }
-</style>

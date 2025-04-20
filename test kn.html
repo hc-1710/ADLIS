@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue sur ADLIS</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(90deg, #fff, #c9d6ff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      width: 100%;
+      padding: 40px 20px;
+      background: rgba(94, 163, 241, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      width: 400px;
+      mix-blend-mode: multiply;
+    }
+    
+    .floating-images {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  margin-top: 60px;
+}
+
+.floating-images img {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 6px solid #ffffffcc;
+  transition: transform 0.4s ease;
+}
+
+
+/* Positionnement aléatoire (manuellement défini ici) */
+.floating-images img:nth-child(1) {
+  top: 40px;
+  left: 15%;
+}
+.floating-images img:nth-child(2) {
+  top: 60px;
+  left: 38%;
+}
+.floating-images img:nth-child(3) {
+  top: 0;
+  right: 40%;
+}
+
+.floating-images img:hover {
+  transform: scale(1.1) rotate(3deg);
+}
+
+
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      font-size: 16px;
+      color: #000;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #2f4eda;
+    }
+
+    nav ul li a.active::after,
+    nav ul li a:hover::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #2f4eda;
+    }
+
+    main {
+      padding: 60px 40px;
+    }
+
+    .text h1 {
+      font-size: 50px;
+      color: #4e060d;
+      margin-bottom: 20px;
+    }
+    .text h1, .text h2, .text p {
+  color: #ffffff; /* Texte blanc */
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Ombre légère pour contraster */
+}
+
+.text a {
+  background: #7494ec;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.text a:hover {
+  background: #5a76c9;
+}
+
+    .auto-typing {
+      color: #7494ec;
+      font-weight: bold;
+    }
+
+    .text h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .text p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .text a {
+      display: inline-block;
+      background: #7494ec;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      padding: 10px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .text a:hover {
+      background: #4e6cd6;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav ul {
+        padding-top: 10px;
+      }
+
+      .text h1 {
+        font-size: 32px;
+      }
+
+      .text h2 {
+        font-size: 20px;
+      }
+
+      .text p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#"><img src="ADLIS_logo_transparent (1).png" alt="Logo ADLIS" class="logo"></a>
+    <nav>
+      <ul>
+        <li><a href="login.html" class="active">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="text">
+      <h1>Des <span class="auto-typing"></span></h1>
+      <h2>Bienvenue sur ADLIS - Votre librairie en ligne de référence</h2>
+      <p>
+        Découvrez un vaste choix de livres pour tous les goûts et toutes les passions.<br>
+        Que vous soyez amateur de fiction, passionné de culture ou à la recherche de ressources pédagogiques,<br>
+        vous trouverez votre bonheur parmi notre large collection.
+      </p>
+      <a href="#">Savoir plus</a>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+  <script>
+    new Typed(".auto-typing", {
+      strings: ["Livres pédagogiques", "Livres culturels", "Romans", "Livres de loisirs"],
+      typeSpeed: 55,
+      backSpeed: 30,
+      loop: true,
+      showCursor: false
+    });
+  </script>
+<section class="floating-images">
+    <img src="photo1.avif" alt="Fille lisant un livre">
+    <img src="PHOTO2.avif" alt="Femme avec un livre et un café">
+    <img src="photo3.jpg" alt="Bibliothèque moderne">
+</section>
+  
+</body>
+</html>

@@ -1,0 +1,132 @@
+.payment-right{
+padding: 24px;
+background-color: var(--white);
+border-radius: 12px;
+box-shadow: 0 4px 24px rgb(76, 8, 248) ;
+width: 40%; 
+height: 450px;
+margin: 10% auto;  
+text-align: center
+
+}
+.payment-method {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
+    overflow-x: auto;
+    padding: 4px 0; 
+    margin-bottom: 12px;
+}
+.payment-method input{
+
+    display: none;
+}
+.payment-method-item{
+   width: 80px;
+   height: 60px; 
+   padding: 8px;
+   border: 1px solid gray;
+   border-radius: 8px;
+   margin-right: 12px;
+   cursor: pointer;
+   position: relative;
+}
+input:checked + .payment-method-item{
+border-color: rgba(119, 29, 184, 0.689);
+}
+input:checked + .payment-method-item::before{
+content: "";
+position: absolute;
+top: -4px;
+right: -4px;
+width: 16px;
+height: 16px;
+border-radius: 50%;
+background-color: rgba(113, 16, 182, 0.838);
+background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0icmdiYSgyNTEsMjQ2LDI0NiwxKSI+PHBhdGggZD0iTTkuOTk5NyAxNS4xNzA5TDE5LjE5MjEgNS45Nzg1MkwyMC42MDYzIDcuMzkyNzNMOS45OTk3IDE3Ljk5OTNMMy42MzU3NCAxMS42MzU0TDUuMDQ5OTYgMTAuMjIxMkw5Ljk5OTcgMTUuMTcwOVoiPjwvcGF0aD48L3N2Zz4=");
+background-size: 13px ;
+background-position: center;
+background-repeat: no-repeat;
+}
+.payment-method-item > img {
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+}
+.payment-title{
+   font-size: 30px;
+   font-weight: 600;
+   margin-bottom: 16px;
+   color: rgb(15, 1, 54);
+   
+} 
+.payment-form-group{
+    position: relative;
+   margin-top: 20px;
+   margin-right: 68px; 
+   margin-bottom: 16px;
+}
+.payment-form-control{
+   outline: transparent;
+   border: 1px solid gray;
+   border-radius :8px; 
+   padding: 24px 16px 8px 16px ;
+   width:60%; 
+   transition: all -1s ease-in-out;
+}
+.payment-form-label{
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   left: 90px;
+   color: gray;
+   pointer-events: none;
+   transition: all -1s ease-in-out;
+}
+.payment-form-control:focus{
+  outline:2px solid  rgba(132, 36, 200, 0.714) ;
+  border-color: rgba(132, 36, 200, 0.714) ;
+}
+.payment-form-control:focus + .payment-form-label,
+.payment-form-control:not(:placeholder-shown) + .payment-form-label  {
+   top: 24%;
+   font-size: 13px;
+}
+ .payment-form-label-required::after{
+    content: "*";
+    color: red;
+
+ }
+ .payment-form-group-flex{
+    display: flex;
+    align-items: center;
+   
+   }
+   .payment-form-group-flex > :not(:last-child)   {
+      margin-right: 12px;
+     margin-left: 40px;
+     width: 280px;
+    
+   }
+   .payment-form-submit-button{
+      background-color:rgb(115, 22, 255) ;
+      border-radius: 8px;
+       outline: transparent;
+       display: flex ;
+       align-items: center;
+       justify-content: center;
+       width: 100%;
+       border: none;
+       cursor: pointer;
+       color: white;
+       font-weight: 600;
+       padding: 16px;
+       transition: all -15s ease-in-out;
+   }
+   .payment-form-submit-button:hover {
+    background-color: rgb(13, 13, 14);
+   }
+   .payment-form-submit-button >  i {
+     margin-right: 8px;
+   }

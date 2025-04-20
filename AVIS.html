@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avis</title>
+</head>
+<body>
+    
+<div class="container">
+
+    <div class="head"><h1>Ecrire un commentaire</h1></div>
+    <div><span id="comment">0 </span>Commentaires</div>
+    <div class="text"><p>Nous sommes heureux d'entendre votre avis</p></div>
+    <div class="comments"></div>
+       <div class="commentbox">
+          <img src="download.png" alt="user">
+            <div class="content">
+               <h2>Commenter comme:</h2>
+               <input type="text" value="Anonyme" class="user">
+
+                 <div class="commentinput">
+                  <input type="text" placeholder="Entrer un commentaire" class="usercomment">
+                     <div class="buttons">
+                        <button type="submit" disabled id="publish">Publier</button>
+                           <div class="notify">
+                              <input type="checkbox" class="notifyinput"> <span>Préviens-moi</span>
+                           </div>
+                     </div>
+                 </div>
+                 <p class="policy">Ce site Web est protégé par <a href=""> la politique de confidentialité</a> de Google et <a href="">les conditons d'utilisation.</a></p>
+            </div>
+       </div>
+</div> 
+
+
+
+
+<script>
+
+"use strict";
+
+
+const userId = {
+     name:null,
+     identity:null,
+     image:null,
+     message:null,
+     date:null
+}
+
+
+const userComment = document.querySelector(".usercomment");
+const publishBtn = document.querySelector("#publish");
+const comments = document.querySelector(".comments");
+const userName = document.querySelector(".user");
+
+
+userComment.addEventListener("input", e =>{
+if(!userComment.value){
+  publishBtn.setAttribute("disabled","disabled");
+  publishBtn.classList.remove("abled")
+}else{
+publishBtn.removeAttribute("disabled");
+publishBtn.classList.add("abled")
+}
+
+})
+
+
+
+
+function addPost(){
+console.log("the button works")
+
+if(!userComment.value) return;
+userId.name=userName.value;
+  if(userId.name === "Anonyme"){
+      userId.identity=false;
+      userId.image="an.png";
+  }else{
+    userId.identity=true;
+    userId.image="download.png";
+  }
+
+
+userId.message=userComment.value;
+userId.date=new Date().toLocaleDateString();
+let published=
+`<div class="parents"> 
+   <img src="${userId.image}">
+     <div>
+      <h1>${userId.name}</h1>
+      <p>${userId.message}</p>
+     
+      <span class="date">${userId.date}</span>
+     </div>
+ </div>`;
+
+
+ comments.innerHTML += published;
+ userComment.value = "";
+
+
+
+    let commentsNum = document.querySelector(".parents").length;
+    document.getElementById("comment").textContent = commentsNum;
+
+
+
+}
+
+
+
+publishBtn.addEventListener("click",addPost)
+
+
+
+</script>
+
+
+</body>
+</html>
+<style> 
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+background: #f2f2f2;
+
+}
+
+.container{
+    background: #fff;
+    padding: 20px;
+    font-family: monospace;
+    width: 500px;
+    box-shadow: 0 0 5px #000;
+    }
+
+.head{
+    text-transform: uppercase;
+    margin-bottom: 20px;  
+} 
+
+.text{
+    margin: 10px 0;
+    font-family: sans-serif;
+    font-size: 0.9em;
+}
+
+.commentbox{
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.commentbox >img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.content{
+    width: 100%;
+}
+
+.user{
+    border: none;
+    outline: none;
+    margin: 5px 0;
+    color: #808080;
+   margin-left: 20px;
+   padding: 10px;
+}
+
+.commentinput > input{
+    border: none;
+    padding: 10px;
+    padding-left: 0;
+    outline: none;
+    border-bottom: 2px solid blue;
+    margin-bottom: 10px;
+    width: 95%;
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #808080;
+}
+
+.buttons button{
+    padding: 5px 10px;
+    background: lightgray;
+    color: #808080;
+    text-transform: uppercase;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.buttons button.abled{
+    background:blue ;
+    color: #fff;
+}
+
+.policy{
+    margin: 20px 0;
+    font-size: 0.8em;
+    font-family: Arial, sans-serif;
+    color: #808080;
+}
+
+.policy a{
+    text-decoration: none;
+    color: blue;
+}
+
+.notify{
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.notify > input{
+    margin-right: 5px;
+}
+
+.parents{
+    font-family: Arial, sans-serif;
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.parents h1{
+    font-size: 0.9em;
+}
+
+.parents p{
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.parents > img{
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+    margin-right: 20px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.engagements{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.engagements img{
+    width: 20px;
+}
+
+.engagements img:nth-child(1){
+    margin-right: 10px;
+    width: 25px;
+}
+
+.date{
+    color: #808080;
+    font-size: 0.8em;
+}
+</style>
